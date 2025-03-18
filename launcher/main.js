@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 const AdmZip = require('adm-zip');  // Knihovna pro rozbalování ZIP souborů
+const { version } = require('os');
 
 const versionFilePath = path.join(__dirname, 'version.txt');
 const downloadPath = path.join(__dirname, 'game');
@@ -86,7 +87,7 @@ function downloadNewVersion(latestVersion) {
 function extractGameFiles(latestVersion) {
     try {
         const zip = new AdmZip(path.join(downloadPath, 'game.zip'));
-        const extractPath = path.join(downloadPath, `Slimer-${latestVersion}`);
+        const extractPath = path.join(downloadPath, `Slimer`);
 
         console.log('Rozbaluji soubory...');
         zip.extractAllTo(extractPath, true);  // Rozbalí všechny soubory do složky podle verze
@@ -107,20 +108,16 @@ function updateVersion(latestVersion) {
 
 // Funkce pro spuštění hry
 function startGame() {
+    console.log('Nscitam verzi...');
+    const currentVersion = getCurrentVersion();
+    console.log(`Aktuální verze hry je: ${currentVersion}`);
     console.log('Spouštím hru...');
-    const gamePath = path.join(downloadPath, 'game.exe');
-    exec(gamePath, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Chyba při spuštění hry: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.error(`Chyba při spuštění hry: ${stderr}`);
-            return;
-        }
-        console.log(`Výstup hry: ${stdout}`);
-    });
+    const gamePath = path.join(downloadPath, "Slimer",`Slimer-${currentVersion}`, 'index.html');
+
+    // Načteme soubor index.html do hlavního okna
+    mainWindow.loadFile(gamePath);
 }
+
 
 let mainWindow;
 
