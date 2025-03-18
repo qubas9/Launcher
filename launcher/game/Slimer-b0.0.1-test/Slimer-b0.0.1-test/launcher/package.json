@@ -1,0 +1,14 @@
+{
+  "name": "launcher",
+  "version": "1.0.0",
+  "description": "",
+  
+  "scripts": {
+    "start": "electron main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^34.3.0"
+  }
+}
