@@ -1,52 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Launcher</title>
+    <title>Slimer Game</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Slimer Game Launcher</h1>
+    <div class="container">
+        <h1>Slimer Game</h1>
 
-    <div id="update-info" style="display:none;">
-        <h2>Nová verze je k dispozici!</h2>
-        <p id="version-description"></p>
-        <button id="download-btn">Stáhnout aktualizaci</button>
+        <!-- Zobrazení informací o aktualizaci -->
+        <div id="update-info" class="update-info">
+            <p>Kontroluji dostupné aktualizace...</p>
+        </div>
+
+        <!-- Tlačítka pro spuštění hry nebo stáhnutí nové verze -->
+        <div id="buttons" class="buttons">
+            <button id="start-game-btn">Spustit hru</button>
+            <button id="update-btn" style="display:none;">St8hnout aktualizaci</button>
+        </div>
     </div>
 
-    <div id="game-ready" style="display:none;">
-        <h2>Hra je připravena!</h2>
-        <button id="start-btn">Spustit hru</button>
-    </div>
-
-    <script>
-        const { ipcRenderer } = require('electron');
-
-        // Posluchač pro zobrazení informace o aktualizaci
-        ipcRenderer.on('show-update-info', (event, updateInfo) => {
-            console.log('Zobrazujeme informace o aktualizaci:', updateInfo);  // Ověření, že data přicházejí správně
-            document.getElementById('update-info').style.display = 'block';
-            document.getElementById('version-description').innerText = updateInfo.description;
-            document.getElementById('download-btn').onclick = function() {
-                ipcRenderer.send('download-update', updateInfo.latestVersion);
-            };
-        });
-
-        // Posluchač pro připravenost hry
-        ipcRenderer.on('game-ready', (event, message) => {
-            console.log('Hra je připravena:', message);  // Ověření, že zpráva o připravenosti hry dorazí
-            document.getElementById('game-ready').style.display = 'block';
-            document.getElementById('start-btn').onclick = function() {
-                ipcRenderer.send('start-game');
-            };
-        });
-        console.log('Launcher skript je načten a připraven.');  // Ověření, že skript je načten
-    </script>
+    <script src="render.js"></script>
 </body>
-<style>
-    #update-info, #game-ready {
-        display: none;
-    }
-</style>
-
 </html>

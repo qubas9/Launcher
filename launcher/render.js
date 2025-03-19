@@ -1,29 +1,44 @@
 const { ipcRenderer } = require('electron');
 
-// Posluchač pro kontrolu dostupnosti aktualizace
-document.getElementById('check-update-btn').addEventListener('click', () => {
-    console.log('Kontroluji dostupné aktualizace...');
-    ipcRenderer.invoke('check-for-updates').then((updateInfo) => {
-        if (updateInfo) {
-            const { latestVersion, description } = updateInfo;
-            console.log('Dostupná nová verze:', latestVersion);
-            console.log('Popis aktualizace:', description);
-            document.getElementById('update-info').innerHTML = `
-                <h3>Nová verze k dispozici: ${latestVersion}</h3>
-                <p>${description}</p>
-                <button id="download-update">Stáhnout aktualizaci</button>
-            `;
-        } else {
-            console.log('Aplikace je aktuální.');
-            document.getElementById('update-info').innerHTML = '<p>Hra je aktuální!</p>';
-        }
-    }).catch((err) => {
-        console.error('Chyba při kontrole aktualizace:', err);
-    });
-});
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("renderer.js is running!");
+    const updateInfoDiv = document.getElementById('update-info');
+    const updateBtn = document.getElementById('update-btn');
+    const startGameBtn = document.getElementById('start-game-btn');
+    let latestVersion = "latest"; // Výchozí hodnota pro nejnovější verzi
+    let description;
 
-// Posluchač pro spuštění hry
-document.getElementById('start-game-btn').addEventListener('click', () => {
-    console.log('Spouštím hru...');
-    // Přidej kód pro spuštění hry
+    ipcRenderer.on('show-update-info', (event, data) => {
+        console.log('Přijato aktualizační info:', data);
+        latestVersion = data.latestVersion;
+        description = data.description;
+        updateInfoDiv.innerHTML = `<strong>Nová verze: ${latestVersion}</strong><br>${description}`;
+        updateBtn.style.display = 'block';
+    });
+
+    // Posluchač pro informování, že hra je aktuální
+    ipcRenderer.on('game-ready', (event, message) => {
+        console.log('Hra je aktuální:', message);
+        updateInfoDiv.innerHTML = `<strong>Hra je aktuální!</strong> ${message}`;
+        startGameBtn.disabled = false;
+        updateBtn.style.display = 'none'; // Skryj tlačítko pro aktualizaci
+    });
+
+    // Po kliknutí na tlačítko pro stažení nové verze
+    updateBtn.addEventListener('click', () => {
+        console.log('Stahuji aktualizaci...',latestVersion);
+        
+        ipcRenderer.send('download-update', latestVersion);
+        updateBtn.disabled = true;
+        updateInfoDiv.innerHTML = 'Stahuji novou verzi...';
+    });
+
+    // Po kliknutí na tlačítko pro spuštění hry
+    startGameBtn.addEventListener('click', () => {
+        console.log('Spouštím hru...');
+        ipcRenderer.send('start-game');
+        startGameBtn.disabled = true;
+        updateInfoDiv.innerHTML = 'Spouštím hru...';
+    });
+
 });

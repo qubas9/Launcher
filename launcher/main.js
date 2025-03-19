@@ -86,6 +86,7 @@ function downloadNewVersion(latestVersion) {
 // Funkce pro rozbalení ZIP souboru
 function extractGameFiles(latestVersion) {
     try {
+
         const zip = new AdmZip(path.join(downloadPath, 'game.zip'));
         const extractPath = path.join(downloadPath, `Slimer`);
 
