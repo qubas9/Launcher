@@ -1,15 +1,44 @@
 {
-  "name": "launcher",
+  "name": "slimer-launcher",
   "version": "1.0.0",
-  "description": "",
+  "description": "Electron launcher for Slimer",
+  "main": "main.js",
   "scripts": {
-    "start": "electron main.js"
+    "start": "electron main.js",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux"
   },
-  "author": "",
+  "author": "Type3Games",
   "license": "ISC",
   "dependencies": {
     "adm-zip": "^0.5.16",
-    "electron": "^34.3.0",
     "follow-redirects": "^1.15.9"
-  }
+  },
+  "devDependencies": {
+    "electron": "^34.3.0",
+    "electron-builder": "^24.6.0"
+  },
+  "build": {
+    "appId": "Type3Games.Slimer.Launcher",
+    "productName": "Slimer Launcher",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules",
+      "!dist"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "Slimer.png"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "Slimer.png",
+      "maintainer": "Type3Games <Type3Games@gmail.com>"
+    }
+  },
+  "homepage": "https://github.com/qubas9/Launcher"
 }
